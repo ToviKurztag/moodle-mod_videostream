@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/mod/videostream/locallib.php');
 // $cc = $CFG->dirroot . '/mod/videostream/locallib.php';
 
 require_once($CFG->dirroot . '/mod/videostream/renderer.php');
-require_login();
+//require_login();
 /**
  * Returns whether the module supports a feature or not.
  *
