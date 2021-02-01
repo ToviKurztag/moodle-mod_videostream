@@ -105,19 +105,6 @@ class mod_videostream_mod_form extends moodleform_mod {
                            get_string('inline', 'videostream'));
         $mform->setType('inline', PARAM_INT);
         $mform->setDefault('inline', $config->inline);
-
-		// // Video File from local_video_directory
-		// if (is_siteadmin()) {
-		// 	$video_list = $DB->get_records_sql_menu('SELECT id, concat(orig_filename," :", id ) FROM {local_video_directory}');
-		// } else {
-		// 	$video_list = $DB->get_records_sql_menu('
-		// 		SELECT id, concat(orig_filename," :", id )
-		// 		FROM {local_video_directory} 
-		// 		WHERE
-		// 			owner_id = ?
-		// 			OR private <> 1',
-		// 		[$USER->id]);
-        // }
         
         // Disable users to seek forwards.
         $mform->addElement('advcheckbox',
@@ -129,17 +116,16 @@ class mod_videostream_mod_form extends moodleform_mod {
 
         // Video File from local_video_directory.
         if (is_siteadmin()) {
-            $video_list = $DB->get_records_sql_menu('SELECT id, orig_filename FROM {local_video_directory}');
+            $video_list = $DB->get_records_sql_menu('SELECT id, concat(orig_filename," :", id ) FROM {local_video_directory}');
         } else {
             $video_list = $DB->get_records_sql_menu('
-				SELECT id, orig_filename
+				SELECT id, concat(orig_filename," :", id )
 				FROM {local_video_directory}
 				WHERE
 					owner_id = ?
 					OR private <> 1',
 				[$USER->id]);
 		}
-
         $mform->addElement('autocomplete', 'videoid', get_string('video', 'videostream'), $video_list);
         // Standard elements, common to all modules.
         $this->standard_coursemodule_elements();
