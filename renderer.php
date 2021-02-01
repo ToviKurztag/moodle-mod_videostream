@@ -188,8 +188,7 @@ class mod_videostream_renderer extends plugin_renderer_base {
         $output .= $this->video_events($videostream);
         return $output;
     }
-// <script src="https://vjs.zencdn.net/6.6.3/video.js"></script>
-//<script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
+
     /**
      * Utility function for creating the symlink/php video source elements HTML. return a basic videojs player for php/symlink pseudo streaming
      *
@@ -197,6 +196,7 @@ class mod_videostream_renderer extends plugin_renderer_base {
      *        string $type 
      * @return string HTML
      */
+    /*
     private function get_video_source_elements_videojs($videostream,$type) {
         global $CFG, $DB;
 		$width = ($videostream->get_instance()->responsive ?
@@ -233,8 +233,25 @@ class mod_videostream_renderer extends plugin_renderer_base {
 
         return $output;
     }
+    */
 
-
+    function get_video_source_elements_videojs($videostream,$type) {
+        global $CFG, $OUTPUT, $DB;
+    
+        $width = ($videostream->get_instance()->responsive ?
+                  '100%' : $videostream->get_instance()->width . "px");
+        $height = ($videostream->get_instance()->responsive ?
+                   'auto' : $videostream->get_instance()->height . "px");
+        $videolink = $this->createSYMLINK($videostream->get_instance()->videoid);
+        $video = $DB->get_record('local_video_directory', ['id' => $videostream->get_instance()->videoid]);
+           
+        $data = array('width' => $width, 'height' => $height, 'symlinkstream' => $videolink, 
+                        'wwwroot' => $CFG->wwwroot, 'video_id' => $video->id, 'type' => 'video/mp4');
+        $output = $OUTPUT->render_from_template("mod_videostream/symlink", $data);
+        $output .= $this->video_events($videostream);
+        return $output;
+    }
+    
     /**
      * Renders videostream video.
      *
