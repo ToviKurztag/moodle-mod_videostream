@@ -154,6 +154,8 @@ class videostream {
      */
     public function update_instance($formdata) {
         global $DB;
+        
+        $config = get_config('videostream');
 
         $update = new stdClass();
         $update->id = $formdata->instance;

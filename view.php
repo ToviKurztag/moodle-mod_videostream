@@ -51,14 +51,6 @@ $PAGE->requires->css('/mod/videostream/hls/video-js.css');
 //$completion = new completion_info($course);
 //$completion->set_module_viewed($cm);
 
-
-// Log viewing.
-//add_to_log($course->id,
-//           'videostream',
-//           'view',
-//           'view.php?id=' . $cm->id,
-//           $videostream->get_instance()->id, $cm->id);
-
 $event = \mod_videostream\event\video_view::create(array(
     'objectid' => $videostream->get_instance()->videoid,
     'context' => context_module::instance($cm->id)

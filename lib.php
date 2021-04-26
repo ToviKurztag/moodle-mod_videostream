@@ -225,7 +225,7 @@ function videostream_get_coursemodule_info($coursemodule) {
     require_once($CFG->dirroot . '/mod/videostream/locallib.php');
 
     $dbparams = array('id' => $coursemodule->instance);
-    $fields = 'id, name, intro, introformat, inline, videoid';
+    $fields = 'id, name, intro, introformat, width, height, inline, responsive, videoid, disableseek';
 
     if (!$videostream = $DB->get_record('videostream', $dbparams, $fields)) {
         return false;
@@ -263,13 +263,38 @@ function videostream_get_coursemodule_info($coursemodule) {
                 'height' => 200,
                 'sesskey' => $sesskey
             ));
+        } else if (get_config('videostream')->streaming == "vimeo") {
+            // Vimeo video.
+            $width = $videostream->responsive ? '0px' : $videostream->width . "px";
+            $height = $videostream->responsive ? '0px' : $videostream->height . "px";
+            $seek = $videostream->disableseek ? '1' : '0';
+            $responsive = $videostream->responsive ? true : false;
+
+            $video = $DB->get_record('local_video_directory', ['id' => $videostream->videoid]);
+            $videovimeo = $DB->get_record('local_video_directory_vimeo', ['videoid' => $videostream->videoid]);
+            $data = array(
+                'width' => $width, 
+                'height' => $height, 
+                'responsive' => $responsive,
+                'symlinkstream' => $videovimeo->streamingurl,
+                'type' => 'video/mp4', 
+                'wwwroot' => $CFG->wwwroot, 
+                'video_id' => $video->id, 
+                'video_vimeoid' => $videovimeo->vimeoid, 
+                'prevent_seek' => $seek
+            );
+
+            $result->content .= $OUTPUT->render_from_template('mod_videostream/inlinevimeo', $data);
+
         } else {
+            $disableseek = $videostream->disableseek ? true : false;
             $result->content .= $OUTPUT->render_from_template('mod_videostream/inlinevideo', array(
                 'streaming' => get_streaming_server_url() . '/' . local_video_directory_get_filename($videostream->videoid) . '.mp4',
                 'wwwroot' => $CFG->wwwroot,
                 'cmid' => $coursemodule->id,
                 'id' => $videostream->videoid,
-                'sesskey' => $sesskey
+                'sesskey' => $sesskey,
+                'disableseek' => $disableseek
             ));
         }
     }

@@ -106,6 +106,7 @@ class mod_videostream_mod_form extends moodleform_mod {
         $mform->setType('inline', PARAM_INT);
         $mform->setDefault('inline', $config->inline);
         
+
         // Disable users to seek forwards.
         $mform->addElement('advcheckbox',
                             'disableseek',
@@ -113,7 +114,6 @@ class mod_videostream_mod_form extends moodleform_mod {
                             get_string('disableseek', 'videostream'));
                       $mform->setType('disableseek', PARAM_INT);
                       $mform->setDefault('disableseek', $config->disableseek);
-
         // Video File from local_video_directory.
         if (is_siteadmin()) {
             $video_list = $DB->get_records_sql_menu('SELECT id, concat(orig_filename," :", id ) FROM {local_video_directory}');
