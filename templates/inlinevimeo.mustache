@@ -1,9 +1,8 @@
 <span>
-  <div data-vimeo-id="{{video_vimeoid}}" data-vimeo-width="{{width}}" data-vimeo-height="{{height}}" data-vimeo-responsive="{{responsive}}" id="{{video_vimeoid}}"></div>
+  <div videoid="{{video_id}}" data-vimeo-id="{{video_vimeoid}}" data-vimeo-width="{{width}}" data-vimeo-height="{{height}}" data-vimeo-responsive="{{responsive}}" id="{{video_vimeoid}}"></div>
 </span>
 
-<script src="https://player.vimeo.com/api/player.js">
-</script>
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
 
     var player = new Vimeo.Player('{{video_vimeoid}}');

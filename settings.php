@@ -83,6 +83,13 @@ if ($ADMIN->fulltree) {
                                          get_string('disableseek', 'videostream'),
                                          0));
 
+    // use vimeo player
+    $settings->add(
+        new admin_setting_configcheckbox('videostream/vimeoplayer',
+                                         get_string('vimeoplayer', 'videostream'),
+                                         get_string('vimeoplayer_explain', 'videostream'),
+                                         0));
+
 	// dash or hls
 	$settings->add(
 		new admin_setting_configselect('videostream/streaming',

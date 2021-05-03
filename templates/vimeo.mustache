@@ -2,12 +2,19 @@
 <head>
 </head>
 <body>
-  <div data-vimeo-id="{{video_vimeoid}}" data-vimeo-width="{{width}}" data-vimeo-height="{{height}}" data-vimeo-responsive="{{responsive}}" id="{{video_vimeoid}}"></div>
+  <div 
+  videoid="{{video_id}}" 
+  data-vimeo-id="{{video_vimeoid}}" 
+  data-vimeo-controls="true"
+  data-vimeo-width="{{width}}" 
+  data-vimeo-height="{{height}}"  
+  data-vimeo-responsive="{{responsive}}" 
+  id="{{video_vimeoid}}">
+  </div>
 
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script>
-
-    var player = new Vimeo.Player('{{video_vimeoid}}');
+    var player = new Vimeo.Player("{{video_vimeoid}}");
     var timeWatched = 0;
 
     player.on("timeupdate", function(data) {
@@ -22,6 +29,5 @@
         }
     });
   </script>
-
 </body>
 </html>

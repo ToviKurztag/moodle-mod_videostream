@@ -88,7 +88,8 @@ $string['time'] = 'זמן';
 $string['bookmarkname'] = 'סימנייה';
 $string['deletebookmark'] = 'האם למחוק סימניה זו?';
 $string['addteacherbookmark'] = 'הוסף סימניה עבור כל המשתתפים';
-
-
-//Tami
 $string['video_not_ready'] = 'הסרטון עדין לא מוכן לצפיה';
+$string['vimeoplayer'] = 'שימוש בנגן של וימאו';
+$string['vimeoplayer_explain'] = ' אם מאופשר יהיה שימוש בנגן של וימאו, במקרה שלא- תהיה הזרמת HLS';
+
+

@@ -250,32 +250,37 @@ function videostream_get_coursemodule_info($coursemodule) {
     $sesskey = sesskey();
 
     if ($videostream->inline) {
-        if (get_config('videostream', 'streaming' ) == 'hls') {
+        if (get_config('videostream', 'streaming' ) == 'hls' || (get_config('videostream', 'streaming' ) == "vimeo" && !get_config('videostream', 'vimeoplayer'))) {
             $videostreamrendere = $PAGE->get_renderer('mod_videostream');
+            $vimeostreaming = $DB->get_field_sql("SELECT streaminghls FROM {local_video_directory_vimeo} WHERE videoid = ? limit 1", ['videoid' => $videostream->videoid]);
+            
+            if (get_config('videostream', 'streaming' ) == "vimeo") {
+                $hlsstream = $DB->get_field_sql("SELECT streaminghls FROM {local_video_directory_vimeo} WHERE videoid = ? limit 1",
+                ['videoid' => $videostream->videoid]);
+            } else {
+                $hlsstream = $videostreamrendere->createHLS($videostream->videoid);
+            }
             $result->content .= $OUTPUT->render_from_template('mod_videostream/inlinevideohls', array(
                 'streaming' => get_streaming_server_url() . '/' . local_video_directory_get_filename($videostream->videoid) . '.mp4',
                 'wwwroot' => $CFG->wwwroot,
                 'cmid' => $coursemodule->id,
                 'id' => $videostream->videoid,
-                'hlsstream' => $videostreamrendere->createHLS($videostream->videoid),
+                'hlsstream' => $hlsstream,
                 'value' => $videostreamclass->get_instance()->disableseek ? true : false,
                 'width' => 400,
                 'height' => 200,
                 'sesskey' => $sesskey
             ));
-        } else if (get_config('videostream')->streaming == "vimeo") {
+        } else if (get_config('videostream')->streaming == "vimeo" && $videostream->vimeoplayer) {
             // Vimeo video.
-            $width = $videostream->responsive ? '0px' : $videostream->width . "px";
-            $height = $videostream->responsive ? '0px' : $videostream->height . "px";
+            $responsive = false;
             $seek = $videostream->disableseek ? '1' : '0';
-            $responsive = $videostream->responsive ? true : false;
-
             $video = $DB->get_record('local_video_directory', ['id' => $videostream->videoid]);
             $videovimeo = $DB->get_record('local_video_directory_vimeo', ['videoid' => $videostream->videoid]);
             $data = array(
-                'width' => $width, 
-                'height' => $height, 
-                'responsive' => $responsive,
+                'width' => 400, 
+                'height' => 200, 
+                'responsive' => 0,
                 'symlinkstream' => $videovimeo->streamingurl,
                 'type' => 'video/mp4', 
                 'wwwroot' => $CFG->wwwroot, 

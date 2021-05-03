@@ -1,13 +1,10 @@
-
 <video 
-  id="videostream{{uiniqid}}" 
+  id="video{{videoid}}" 
   class="video-js vjs-default-skin" 
-  data-setup='{}' 
-  style="position: relative !important; 
-  width: {{width}} !important; 
-  height: {{height}} !important;" 
+  data-setup='{ "playbackRates": [0.5, 1, 1.5, 2] }' 
+  style="position: relative !important; width: {{width}} !important; height: {{height}} !important;" 
   controls> 
-   <source src="{{hlsstream}}" type="application/x-mpegURL"/>
+  <source src="{{hlsstream}}" type="application/x-mpegURL"/>
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
       web browser that
@@ -15,19 +12,20 @@
     </p>
 </video>
 
- <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
-  <script src="hls/videojs-contrib-hls/videojs-contrib-hlsjs.min.js"></script>
-  <script src="hls/videojs-seek-buttons/videojs-seek-buttons.min.js"></script>
-  <script src="hls/videojs-contrib-quality-levels/videojs-contrib-quality-levels.min.js"></script>
-  <script src="hls/videojs-hls-quality-selector/videojs-hls-quality-selector.min.js"></script>
-  <!--script src="hls/videojs-resume/store.everything.min.js"></script>
-  <script src="hls/videojs-resume/videojs-resume.min.js"></script-->
+<script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
+<script src="hls/videojs-contrib-hls/videojs-contrib-hlsjs.min.js"></script>
+<script src="hls/videojs-seek-buttons/videojs-seek-buttons.min.js"></script>
+<script src="hls/videojs-contrib-quality-levels/videojs-contrib-quality-levels.min.js"></script>
+<script src="hls/videojs-hls-quality-selector/videojs-hls-quality-selector.min.js"></script>
+<!--script src="hls/videojs-resume/store.everything.min.js"></script>
+<script src="hls/videojs-resume/videojs-resume.min.js"></script-->
 
 <script>
-  var player = videojs('videostream{{uiniqid}}');
-   
- (function(window, videojs) {
-      var player = window.player = videojs('videostream{{uiniqid}}');
+  var player = videojs('video{{videoid}}');
+   $("#video{{videoid}}").webkitEnterFullScreen();
+
+  (function(window, videojs) {
+      var player = window.player = videojs('video{{videoid}}');
       var seekButtons = window.seekButtons = player.seekButtons({
         forward: 10,
         back: 10
@@ -35,7 +33,7 @@
     }(window, window.videojs));
 
     (function(window, videojs) {
-      var player = window.player = videojs('videostream{{uiniqid}}');
+      var player = window.player = videojs('video{{videoid}}');
       player.hlsQualitySelector({
           displayCurrentQuality: true,
       });
@@ -43,7 +41,7 @@
 
 /*
     (function(window, videojs) {
-    var player = window.player = videojs('videostream{{uiniqid}}');
+    var player = window.player = videojs('video{{videoid}}');
     player.Resume({
       uuid: 'UNIQUE_VIDEO_IDENTIFIER',
       playbackOffset: 5, // begin playing video this number of seconds before it otherwise would.
@@ -57,7 +55,7 @@
 
 {{#disableseek}}
 <script>
-  videojs('videostream{{uiniqid}}').ready(function() {
+  videojs('video{{videoid}}').ready(function() {
     
     var myPlayer = this;
     //Set initial time to 0

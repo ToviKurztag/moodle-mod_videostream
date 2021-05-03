@@ -8,7 +8,7 @@
 		<input name="bookmarkname" class="form-control" id="bookmarkname-{{uniqid}}">
 		<button id="bookmarkflagtoggle-{{uniqid}}" class="btn"><i class="fa fa-flag"></i></button>
 		<input name="bookmarkflag" type="hidden" value="0">
-		<input name="moduleid" type="hidden" value="{{moduleid}}">
+		<input name="id" type="hidden" value="{{moduleid}}">
 		<input type="submit" class="btn btn-primary" id="bookmarksave-{{uniqid}}">
 		
 		{{#isteacher}}
@@ -30,11 +30,8 @@ require(['jquery', 'core/templates'], function($, templates) {
 	var video_vimeoid;
 
 	if (video == 'undefined' || !video) {
-		video_vimeoid = $('iframe').first().parent().attr("id");
+		video_vimeoid = $("[videoid={{videoid}}]").attr("id");
 		if (typeof video_vimeoid !== "undefined") {
-			var video = new Vimeo.Player(video_vimeoid);
-		} else {
-			video_vimeoid = $('iframe').first().parent().parent().attr("id");
 			var video = new Vimeo.Player(video_vimeoid);
 		}
 	}
@@ -73,7 +70,7 @@ require(['jquery', 'core/templates'], function($, templates) {
 		var theform = $('#bookmarkform-{{uniqid}}');
 		//var currenttime = video.currentTime;
 		//theform[0][0].value = currenttime;
-
+		console.log(theform);
 		if (typeof video_vimeoid !== "undefined" || video_vimeoid) {
 			video.getCurrentTime().then(function(data) {
 			var currenttime = data;
@@ -92,6 +89,7 @@ require(['jquery', 'core/templates'], function($, templates) {
 		if (checkBox.is(':checked')) {
 			  $("#teacherbookmark").val("1");
 		} 
+	
 		$.post(M.cfg.wwwroot + '/mod/videostream/ajax_save.php', theform.serialize(), function(data) {
 			console.log(data);
 

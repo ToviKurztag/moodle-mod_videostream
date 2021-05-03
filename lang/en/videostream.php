@@ -94,6 +94,7 @@ $string['bookmarkname'] = 'Bookmark';
 $string['deletebookmark'] = 'Delete this bookmark?';
 $string['addteacherbookmark'] = 'add bookmark for all participants';
 
-
-//Tami
 $string['video_not_ready'] = 'The video is not ready yet';
+$string['vimeoplayer'] = 'use vimeo plyer';
+$string['vimeoplayer_explain'] = 'If enabled, use a Vimao player, in case there is no - HLS streaming';
+

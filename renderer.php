@@ -74,6 +74,45 @@ class mod_videostream_renderer extends plugin_renderer_base {
         return $output;
     }
 
+/**
+     * Renders videostream video.
+     *
+     * @param videostream $videostream
+     * @return string HTML
+     */
+    public function video(videostream $videostream) {
+        $output  = '';
+        $contextid = $videostream->get_context()->id;
+
+        // Open videostream div.
+        $vclass = ($videostream->get_instance()->responsive ?
+                   'videostream videostream-responsive' : 'videostream');
+        $output .= $this->output->container_start($vclass);
+        $config = get_config('videostream');
+
+        if (($config->streaming == "symlink") || ($config->streaming == "php")) {
+            // Elements for video sources. (here we get the symlink and php video).
+            $output .= $this->get_video_source_elements_videojs($videostream, $config->streaming);
+        } else if ($config->streaming == "hls") {
+            // Elements for video sources. (here we get the hls video).
+            $output .= $this->get_video_source_elements_hls($videostream);
+        } else if ($config->streaming == "vimeo") {
+            // Vimeo video.
+            if ($config->vimeoplayer) {
+                $output .= $this->get_video_source_elements_vimeo($videostream);
+            } else {
+                $output .= $this->get_video_source_elements_hls($videostream);
+            }
+        } else {
+            // Dash video.
+            $output .= $this->get_video_source_elements_dash($videostream);
+        }
+        $output .= $this->get_bookmark_controls($videostream);
+        // Close videostream div.
+        $output .= $this->output->container_end();
+        return $output;
+    }
+
     /**
      * Render the footer
      *
@@ -97,9 +136,6 @@ class mod_videostream_renderer extends plugin_renderer_base {
 
         return $output;
     }
-
-
-
 
     /**
      * Utility function for creating the JS of video events.
@@ -140,17 +176,27 @@ class mod_videostream_renderer extends plugin_renderer_base {
      * @return string HTML
      */
     public function get_video_source_elements_hls($videostream) {
-        global $CFG, $OUTPUT;
-		$width = ($videostream->get_instance()->responsive ?
+        
+        global $CFG, $OUTPUT, $DB;
+        $config = get_config('videostream');
+        $width = ($videostream->get_instance()->responsive ?
                   '100%' : $videostream->get_instance()->width . 'px');
         $height = ($videostream->get_instance()->responsive ?
-                   '100%' : $videostream->get_instance()->height . 'px');
+                   'auto' : $videostream->get_instance()->height . 'px');
         $disableseek = ($videostream->get_instance()->disableseek ?
                 true : false);
+
+        if ($config->streaming == "vimeo") {
+            $hlsstream = $DB->get_field_sql("SELECT streaminghls FROM {local_video_directory_vimeo} WHERE videoid = ? limit 1",
+            ['videoid' => $videostream->get_instance()->videoid]);
+        } else {
+            $hlsstream = $this->createHLS($videostream->get_instance()->videoid);
+        }
         $data = array('width' => $width,
                       'height' => $height,
-                      'hlsstream' => $this->createHLS($videostream->get_instance()->videoid),
+                      'hlsstream' => $hlsstream,
                       'disableseek' => $disableseek,
+                      'videoid' => $videostream->get_instance()->videoid,
                       'wwwroot' => $CFG->wwwroot);
         $output = $OUTPUT->render_from_template("mod_videostream/hls", $data);
         $output .= $this->video_events($videostream);
@@ -230,45 +276,11 @@ class mod_videostream_renderer extends plugin_renderer_base {
 
         $data = array('width' => $width, 'height' => $height, 'responsive' => $responsive, 'symlinkstream' => $videovimeo->streamingurl, 'type' => 'video/mp4',
                       'wwwroot' => $CFG->wwwroot, 'video_id' => $video->id, 'video_vimeoid' => $videovimeo->vimeoid , 'prevent_seek' => $seek);
-
+        //print_r($data);die;
         $output = $OUTPUT->render_from_template("mod_videostream/vimeo", $data);
+        //$output = $OUTPUT->render_from_template("mod_videostream/symlink", $data);
 
-        $output .= $this->video_events($videostream, 1);
-        return $output;
-    }
-
-    /**
-     * Renders videostream video.
-     *
-     * @param videostream $videostream
-     * @return string HTML
-     */
-    public function video(videostream $videostream) {
-        $output  = '';
-        $contextid = $videostream->get_context()->id;
-
-        // Open videostream div.
-        $vclass = ($videostream->get_instance()->responsive ?
-                   'videostream videostream-responsive' : 'videostream');
-        $output .= $this->output->container_start($vclass);
-        $config = get_config('videostream');
-
-        if (($config->streaming == "symlink") || ($config->streaming == "php")) {
-            // Elements for video sources. (here we get the symlink and php video).
-            $output .= $this->get_video_source_elements_videojs($videostream, $config->streaming);
-        } else if ($config->streaming == "hls") {
-            // Elements for video sources. (here we get the hls video).
-            $output .= $this->get_video_source_elements_hls($videostream);
-        } else if ($config->streaming == "vimeo") {
-            // Vimeo video.
-            $output .= $this->get_video_source_elements_vimeo($videostream);
-        } else {
-            // Dash video.
-            $output .= $this->get_video_source_elements_dash($videostream);
-        }
-        $output .= $this->get_bookmark_controls($videostream);
-        // Close videostream div.
-        $output .= $this->output->container_end();
+        //$output .= $this->video_events($videostream, 1);
         return $output;
     }
 
