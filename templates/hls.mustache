@@ -4,6 +4,8 @@
   data-setup='{ "playbackRates": [0.5, 1, 1.5, 2] }' 
   style="position: relative !important; width: {{width}} !important; height: {{height}} !important;" 
   controls> 
+  <track label="Subtitles" kind="subtitles" srclang="language_code"
+    src="{{wwwroot}}/local/video_directory/subs.php?video_id={{videoid}}" default>
   <source src="{{hlsstream}}" type="application/x-mpegURL"/>
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a

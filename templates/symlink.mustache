@@ -22,8 +22,8 @@
     data-setup='{ "playbackRates": [0.5, 1, 1.5, 2] }'
     controls
 >
-<track label="English" kind="subtitles" srclang="en" 
-    src="'.$CFG->wwwroot.'/local/video_directory/subs.php?video_id='.{{video_id}}.'" default>
+<track label="Subtitles" kind="subtitles" srclang="language_code"
+    src="{{wwwroot}}/local/video_directory/subs.php?video_id={{video_id}}" default>
 <source src="{{symlinkstream}}" type="{{type}}"/>
 <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
@@ -31,6 +31,9 @@
       <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 </p>
 </video>
+
+
+
 
 <script>
     (function(window, videojs) {
