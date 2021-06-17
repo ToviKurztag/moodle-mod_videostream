@@ -386,7 +386,11 @@ class mod_videostream_renderer extends plugin_renderer_base {
 	}
 
     public function createSYMLINK($videoid) {
-		$config = get_config('local_video_directory');
+
+
+	    global $CFG;
+	    require_once($CFG->dirroot . '/local/video_directory/locallib.php');
+	    $config = get_config('local_video_directory');
 		return $config->streaming . "/" . local_video_directory_get_filename($videoid) . ".mp4";			
 	}
 
